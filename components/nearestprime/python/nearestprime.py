@@ -19,6 +19,8 @@
 
 import os
 import psycopg2
+import falcon
+import json
 
 class NearestPrime(object):
     '''
@@ -61,7 +63,7 @@ class Db(object):
         self.my_host = my_host
         self.conn = psycopg2.connect(database=database, user=user, password=password, host=host, port=port)
 
-    def _get_record(self, index):
+    def get_record(self, index):
         '''
         '''
         cursor = self.conn.cursor()
@@ -71,19 +73,46 @@ class Db(object):
             return rows[0][0]
         raise Exception("Could not retrieve record from database")
 
-    def _save_result(self, index, result):
+    def save_result(self, index, result):
         '''
         '''
         cursor = self.conn.cursor()
         cursor.execute("UPDATE WORK SET NEARPRIME = %d, PROCESSEDBY = '%s' WHERE ID = %d;" % (result, self.my_host, index))
         self.conn.commit()
 
-    def process(self, index):
+
+class Endpoint(object):
+    '''
+    '''
+    def __init__(self, np, db, my_host):
+        self.np      = np
+        self.db      = db
+        self.my_host = my_host
+
+    def on_get(self, req, resp):
         '''
         '''
+        try:
+            index = req.get_param_as_int('id')
+            in_value = self.db.get_record(index)
+            out_value = self.np.nearest(in_value)
+            self.db.save_result(index, out_value)
+            result = {
+                'status'    : 'success',
+                'processor' : self.my_host,
+                'in_value'  : in_value,
+                'out_value' : out_value
+            }
+            resp.body = json.dumps(result)
+        except Exception as error:
+            result = {
+                'status' : 'error',
+                'error'  : '%r' % error
+            }
+            resp.body = json.dumps(result)
 
 
-def main():
+def main(api):
     '''
     The main function runs only if this module is directly executed (i.e. not
     imported elsewhere as a library).
@@ -93,18 +122,13 @@ def main():
     password = os.getenv('DDW_PASSWORD', 'demopass')
     host     = os.getenv('DDW_HOST',     '127.0.0.1')
     port     = os.getenv('DDW_PORT',     '5432')
-    my_host  = os.getenv('HOSTNAME',     'unknown')
+    my_host  = os.getenv('DDW_SITENAME', os.getenv('HOSTNAME', 'unknown'))
 
     np = NearestPrime()
     db = Db(database, user, password, host, port, my_host)
-
-    setup = Setup(database, user, password, host, port)
-    setup.drop_table()
-    setup.create_table()
-    setup.fill_table(1000)
-    setup.close()
+    endpoint = Endpoint(np, db, my_host)
+    api.add_route('/post_work', endpoint)
 
 
-if __name__ == '__main__':
-    # Run as the main module, not imported
-    main()    
+api = falcon.API()
+main(api)
