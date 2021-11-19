@@ -68,7 +68,7 @@ class Setup(object):
         '''
         cursor = self.conn.cursor()
         for id in range(count):
-            value = random.randint(100000, 100000000)
+            value = random.randint(1000000, 10000000)
             cursor.execute('INSERT INTO WORK (ID, VALUE) VALUES (%ld, %ld);' % (id, value))
         self.conn.commit()
 
@@ -87,7 +87,7 @@ def main():
     setup = Setup(database, user, password, host, port)
     setup.drop_table()
     setup.create_table()
-    setup.fill_table(1000)
+    setup.fill_table(10000)
     setup.close()
 
 

@@ -122,7 +122,19 @@ def main(api):
     password = os.getenv('DDW_PASSWORD', 'demopass')
     host     = os.getenv('DDW_HOST',     '127.0.0.1')
     port     = os.getenv('DDW_PORT',     '5432')
-    my_host  = os.getenv('DDW_SITENAME', os.getenv('HOSTNAME', 'unknown'))
+    sitename = os.getenv('DDW_SITENAME', None)
+    hostname = os.getenv('HOSTNAME',     'unknown')
+
+    small_hostname = ''
+    if '-' in hostname:
+        small_hostname = hostname[-6:]
+    else:
+        small_hostname = hostname
+
+    if sitename:
+        my_host = "%s (%s)" % (sitename, small_hostname)
+    else:
+        my_host = hostname
 
     np = NearestPrime()
     db = Db(database, user, password, host, port, my_host)
