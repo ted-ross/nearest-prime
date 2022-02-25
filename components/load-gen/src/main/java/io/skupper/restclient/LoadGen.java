@@ -46,10 +46,10 @@ public class LoadGen {
                 } else {
                     failures++;
                 }
-            if (inFlight < concurrency) {
-                sendRequest();
-            }
-        });
+                if (inFlight < concurrency) {
+                    sendRequest();
+                }
+            });
     }
 
     @GET

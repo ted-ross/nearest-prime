@@ -69,6 +69,7 @@ class Db(object):
         cursor = self.conn.cursor()
         cursor.execute("SELECT VALUE FROM WORK WHERE ID = %d;" % index)
         rows = cursor.fetchall()
+        cursor.close()
         if len(rows) == 1:
             return rows[0][0]
         raise Exception("Could not retrieve record from database")
@@ -79,6 +80,7 @@ class Db(object):
         cursor = self.conn.cursor()
         cursor.execute("UPDATE WORK SET NEARPRIME = %d, PROCESSEDBY = '%s' WHERE ID = %d;" % (result, self.my_host, index))
         self.conn.commit()
+        cursor.close()
 
 
 class Endpoint(object):
