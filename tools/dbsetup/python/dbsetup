@@ -23,7 +23,14 @@ import os
 import psycopg2
 import random
 
-TABLE_NAME = "work"
+##
+## Minimum and Maximum values for the selected random numbers.
+##
+##   Higher numbers result in longer work-processing time
+##   Higher delta between min and max results in greater variance in work-processing time
+##
+VALUE_MIN = 1000000
+VALUE_MAX = 20000000
 
 class Setup(object):
     '''
@@ -47,7 +54,6 @@ class Setup(object):
             self.conn.commit()
         except Exception:
             self.conn.rollback()
-            pass
 
     def create_table(self):
         '''
@@ -68,7 +74,7 @@ class Setup(object):
         '''
         cursor = self.conn.cursor()
         for id in range(count):
-            value = random.randint(1000000, 20000000)
+            value = random.randint(VALUE_MIN, VALUE_MAX)
             cursor.execute('INSERT INTO WORK (ID, VALUE) VALUES (%ld, %ld);' % (id, value))
         self.conn.commit()
 
