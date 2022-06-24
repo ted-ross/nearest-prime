@@ -5,7 +5,7 @@ ADMIN_PWD=password
 PGADMIN_PORT=8089
 PGSQL_USER=demo
 PGSQL_PASSWORD=demopass
-PGSQL_DB=demo_db
+PGSQL_DB=demo-db
 
 echo "Starting postgresql database"
 podman run -d --rm --name nearest-prime-db -e POSTGRESQL_USER=$PGSQL_USER -e POSTGRESQL_PASSWORD=$PGSQL_PASSWORD -e POSTGRESQL_DATABASE=$PGSQL_DB -p 5432:5432 registry.redhat.io/rhel8/postgresql-13:1-56.1654147925
@@ -42,4 +42,6 @@ echo "Database connection port: 5432"
 echo "Database database: " $PGSQL_DB
 echo "Database user: " $PGSQL_USER
 echo "Database password: " $PGSQL_PASSWORD
+echo "To test the database has been initialised run the following query in pgadmin4:"
+echo "select * from work"
 
