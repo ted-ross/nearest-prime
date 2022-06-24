@@ -9,7 +9,11 @@ This project demonstrates how Red Hat Application Interconnect (RHAI) can be use
 Note: Red Hat Application Interconnect is based on the updstream opensource project "Skupper."
 
 ## Prerequisites
-This demonstration requires three separate OpenShift clusters, or at the least two clusters but three distinct development environments and openshift projects.
+This example has been tested using Fedora 36 running OpenShift Local (previsously known as Code Ready Containers) as the "on premises cluster."
+
+In all, the demonstration uses three clusters. one on premises, and two remote clusters. You can get away with one external cluster and run two projects (name spaces) but be careful of the context switching.
+
+Note: There should be no reason this does not work on macOS or other linux distributions, but you will need to replace podman with docker in the scripts.
 
 ### OpenShift Version:
 The demonstration has been developed using OpenShift 4.10, but this should work on any OpenShift 4 verison with no chganges.
