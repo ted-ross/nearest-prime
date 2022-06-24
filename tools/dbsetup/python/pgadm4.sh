@@ -1,6 +1,6 @@
 #! /bin/bash
 
-ADMIN_EMAIL=brbaker@redhat.com
+ADMIN_EMAIL=admin@demo.net
 ADMIN_PWD=password
 PGADMIN_PORT=8089
 PGSQL_USER=demo
