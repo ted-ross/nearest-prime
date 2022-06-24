@@ -13,7 +13,7 @@ This example has been tested using Fedora 36 running OpenShift Local (previsousl
 
 In all, the demonstration uses three clusters. one on premises, and two remote clusters. You can get away with one external cluster and run two projects (name spaces) but be careful of the context switching.
 
-Note: There should be no reason this does not work on macOS or other linux distributions, but you will need to replace podman with docker in the scripts. This example will also work with any other Kubernetes distribution such as EKS and GKE after some very monor tweaks to replace the *oc* commands with *kubectl* commands.
+Note: There should be no reason this does not work on macOS or other linux distributions, but you will need to replace podman with docker in the scripts. This example will also work with any other Kubernetes distribution such as EKS and GKE after some very minor tweaks to replace the *oc* commands with *kubectl* commands.
 
 ### OpenShift Version:
 The demonstration has been developed using OpenShift 4.10, but this should work on any OpenShift 4 verison with no chganges.
