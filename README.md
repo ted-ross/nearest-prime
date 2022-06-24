@@ -19,6 +19,13 @@ Testing has been done with RHAI a pre-release: Skupper v1.0.0 available at: http
 
 ## Overview of thie Git Repo
 
+### /demo
+
+### /tools
+This directory tree contains scripts to set up the database back end.
+
+### /yaml
+
 ## Environment Configuration
 
 ## Demo setup instructions and narrative
