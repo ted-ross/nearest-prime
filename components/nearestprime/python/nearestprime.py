@@ -138,6 +138,7 @@ def main(api):
     else:
         my_host = hostname
 
+    print(f"Connection Details:\nDatabase: {database}\nUser: {user}\nPassword: {password}\nHost: {host}\nPort: {port}\nMy_Host: {my_host}\n")
     np = NearestPrime()
     db = Db(database, user, password, host, port, my_host)
     endpoint = Endpoint(np, db, my_host)
