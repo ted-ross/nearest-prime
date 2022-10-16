@@ -127,4 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Development environment files
 nearest-prime.code-workspace
+demo-env/
