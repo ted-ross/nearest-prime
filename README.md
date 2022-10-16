@@ -1,4 +1,5 @@
 # Application Interconnect Multi-Site Load Balancing Demonstration
+
 ## Overview
 This project demonstrates how Red Hat Application Interconnect (RHAI) can be used to integrate databases and client applications with globally distributed services. The demonstration highlights some important characteristics of RHAI such as:
 1. Integration of VM or bare metal-hosted databases with Kubernetes-based applications.
@@ -6,32 +7,20 @@ This project demonstrates how Red Hat Application Interconnect (RHAI) can be use
 3. Geolocation hosting flexibility
 4. Global cost-based routing
 
-Note: Red Hat Application Interconnect is based on the updstream opensource project "Skupper."
+**Note:** Red Hat Application Interconnect is based on the updstream opensource project `Skupper`.
 
-## Prerequisites
-This example has been tested using Fedora 36 running OpenShift Local (previsously known as Code Ready Containers) as the "on premises cluster."
+The project deploys a database on to a bare metal serer (your laptop), and a front end that is globally distributed across two OpenShift clusters. The final component is a work scheduler/load generator that you will run manually on your laptop. (Note: You could easily extend this to use a second VM.) The load generator is controlled via `curl` requests. 
 
-In all, the demonstration uses three clusters. one on premises, and two remote clusters. You can get away with one external cluster and run two projects (name spaces) but be careful of the context switching.
+The load generator requests the front end to calculate a nearest prime number to the number that is supplied. The front end then updates the on-premises database with the result. Prime numbers were chosen because the calculation can vary from very fast to being very computationally intensive. This introduces some randomness in the front-end's response time and thus demonstrates some important load balancing features of RHAI.
 
-Note: 
-- There should be no reason this does not work on macOS or other linux distributions for the "on premises environment", but you will need to replace podman with docker in the scripts. 
-- This example will also work with any other Kubernetes distribution such as EKS and GKE after some very minor tweaks to replace the *oc* commands with *kubectl* commands.
+<img src="./docs/images/deployment-architecture.png" alt="drawing" width="800"/>
 
-### OpenShift Version:
-The demonstration has been developed using OpenShift 4.10, but this should work on any OpenShift 4 verison with no chganges.
+<span style="color:yellow">REVISIT: Update diagram</span>
 
-### Skupper Version:
-Testing has been done with RHAI a pre-release: Skupper v1.0.0 available at: https://skupper.io/install/index.html
+## Table of Contents
+[Overview of this project](./docs/overview.md)
 
-## Overview of thie Git Repo
+[Database Setup](./docs/database-setup.md)
 
-### /demo
+[Demo script](./docs/demo-script.md)
 
-### /tools
-This directory tree contains scripts to set up the database back end.
-
-### /yaml
-
-## Environment Configuration
-
-## Demo setup instructions and narrative
