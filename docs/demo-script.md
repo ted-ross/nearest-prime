@@ -4,17 +4,17 @@
 
 ### OpenShift Local
 ```
-skupper init --site-name on-prem
+skupper init --site-name on-prem --console-auth=internal --console-user=admin --console-password=password
 ```
 
 ### Remote Site 1
 ```
-skupper init --site-name site-1
+skupper init --site-name site-1 --console-auth=internal --console-user=admin --console-password=password
 ```
 
 ### Remote Site 2
 ```
-skupper init --site-name site-2
+skupper init --site-name site-2 --console-auth=internal --console-user=admin --console-password=password
 ```
 
 Check the install status for each site using `skupper status`.
