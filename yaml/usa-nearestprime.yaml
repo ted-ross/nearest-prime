@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nearestprime
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: nearestprime
+  template:
+    metadata:
+      labels:
+        application: nearestprime
+    spec:
+      containers:
+      - name: nearestprime
+        image: docker.io/tedross/nearestprime:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DDW_PASSWORD
+          value: demopass
+        - name: DDW_HOST
+          value: db
+        - name: DDW_SITENAME
+          value: usa-prem
