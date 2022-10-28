@@ -1,3 +1,13 @@
+# One-Time Environment Setup
+Before you run this demonstration you need to install ```pgsql.```  
+
+**TODO:** Remove the need to install pgsql and launch ```pgadmin4``` in a container.
+
+On Fedora:
+```
+sudo dnf install -y postgresql
+```
+
 # Database Setup
 
 The first set of steps are performed before you start the demonstration.
