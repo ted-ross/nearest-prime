@@ -1,0 +1,57 @@
+all:
+  children:
+    cloud:
+      hosts:
+        cloud1:
+          ansible_connection: local
+          kubeconfig: "{{ lookup('ansible.builtin.env', 'HOME') }}/.kube/config"
+          namespace: nearestprime-1
+          init:
+            siteName: cloud-1
+            enableServiceSync: 'false'
+          token:
+            type: cert
+          services:
+            nearestprime:
+              ports:
+                - 8000
+              targets:
+                - type: deployment
+                  name: nearestprime
+            db:
+              ports:
+                - 5432
+    onprem:
+      hosts:
+        rhel9:
+          ansible_connection: local # comment if running against a remote (ssh) machine
+          # uncomment below if deploying to a remote machine
+          #ansible_host: <remote_ip_addr> # it expects that your user is able to ssh into this IP using its own ssh keys
+          platform: podman
+          init:
+            siteName: onprem-1
+            containerNetwork: nearestprime
+            ingressHosts:
+              - 192.168.124.1
+          links:
+            - host: cloud1
+          services:
+            db:
+              ports: [5432]
+              targets:
+                - type: "host"
+                  name: "db-container"
+              hostIp: "{{ init.ingressHosts[0] }}"
+              hostPorts:
+                - 5432:5432
+            load-gen:
+              ports: [8080]
+              targets:
+                - type: "host"
+                  name: "load-gen-container"
+              hostIp: "{{ init.ingressHosts[0] }}"
+              hostPorts:
+                - 8080:8080
+            nearestprime:
+              ports:
+                - 8000

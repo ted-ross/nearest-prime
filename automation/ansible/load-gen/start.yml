@@ -1,0 +1,9 @@
+---
+- hosts: onprem
+  collections:
+    - containers.podman
+  tasks:
+    - name: "Starting load generator"
+      ansible.builtin.uri:
+        url: "http://{{ init.ingressHosts[0] }}:8080/set_load/{{ load_gen_size | default(1) }}"
+      
