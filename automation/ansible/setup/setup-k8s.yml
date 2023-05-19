@@ -1,0 +1,38 @@
+---
+- name: Creating the namespaces
+  kubernetes.core.k8s:
+    name: "{{ namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+- name: Deploying the nearestprime service
+  kubernetes.core.k8s:
+    name: "nearestprime"
+    namespace: "{{ namespace }}"
+    api_version: apps/v1
+    kind: Deployment
+    state: present
+    kubeconfig: "{{ kubeconfig }}"
+    definition:
+      spec:
+        selector:
+          matchLabels:
+            app: nearestprime
+        template:
+          metadata:
+            labels:
+              app: nearestprime
+          spec:
+            containers:
+            - name: nearestprime
+              image: quay.io/fgiorgetti/nearestprime
+              ports:
+              - containerPort: 8000
+              env:
+              - name: DDW_PASSWORD
+                value: demopass
+              - name: DDW_HOST
+                value: db
+              - name: DDW_SITENAME
+                value: cloud1

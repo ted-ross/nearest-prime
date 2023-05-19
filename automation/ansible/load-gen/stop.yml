@@ -1,0 +1,9 @@
+---
+- hosts: onprem
+  collections:
+    - containers.podman
+  tasks:
+    - name: "Stopping load generator"
+      ansible.builtin.uri:
+        url: "http://{{ init.ingressHosts[0] }}:8080/set_load/0"
+

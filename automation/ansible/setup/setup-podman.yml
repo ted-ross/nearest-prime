@@ -1,0 +1,49 @@
+---
+- name: Install kubernetes module
+  ansible.builtin.pip:
+    name: kubernetes
+    extra_args: --user
+
+- name: Enabling systemd user instance
+  command: "loginctl enable-linger {{ ansible_env.USER }}"
+
+- name: Enabling and starting podman.socket systemd user service
+  ansible.builtin.systemd:
+    name: podman.socket
+    state: started
+    enabled: true
+    scope: user
+
+- name: Creating the nearestprime podman network
+  containers.podman.podman_network:
+    name: "{{ init.containerNetwork | default('skupper') }}"
+
+- name: Creating the nearestprime-db container
+  containers.podman.podman_container:
+    name: db-container
+    image: quay.io/fgiorgetti/nearestprime-db
+    state: started
+    network:
+      - "{{ init.containerNetwork | default('skupper') }}"
+
+- name: Creating the nearestprime-load-gen container
+  containers.podman.podman_container:
+    name: load-gen-container
+    image: quay.io/fgiorgetti/nearestprime-load-gen
+    state: started
+    network:
+      - "{{ init.containerNetwork | default('skupper') }}"
+
+- name: Creating target directory to install the skupper cli
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/bin" # and it is expected that $HOME/bin is in $PATH
+    state: directory
+    mode: '0755'
+
+- include_role:
+    name: skupper_cli_install
+  vars:
+    skupper_cli:
+      version: 1.3.0
+      location: "{{ ansible_env.HOME }}/bin"
+  when: ansible_connection | default("") != "local"
