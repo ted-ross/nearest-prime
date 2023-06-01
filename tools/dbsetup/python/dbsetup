@@ -19,6 +19,7 @@
 # under the License
 #
 
+import sys
 import os
 import psycopg2
 import random
@@ -48,6 +49,7 @@ class Setup(object):
     def drop_table(self):
         '''
         '''
+        print("Dropping table...")
         try:
             cursor = self.conn.cursor()
             cursor.execute('DROP TABLE WORK;')
@@ -58,6 +60,7 @@ class Setup(object):
     def create_table(self):
         '''
         '''
+        print("Re-creating table...")
         cursor = self.conn.cursor()
         cursor.execute('''CREATE TABLE WORK
             (
@@ -72,10 +75,17 @@ class Setup(object):
     def fill_table(self, count):
         '''
         '''
+        print("Filling table...")
         cursor = self.conn.cursor()
         for id in range(count):
+            print(".", end="")
+            sys.stdout.flush()
             value = random.randint(VALUE_MIN, VALUE_MAX)
             cursor.execute('INSERT INTO WORK (ID, VALUE) VALUES (%ld, %ld);' % (id, value))
+            if id % 179 == 178:
+                print("C")
+                self.conn.commit()
+        print("C")
         self.conn.commit()
 
 
