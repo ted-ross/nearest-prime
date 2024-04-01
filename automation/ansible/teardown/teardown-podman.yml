@@ -5,7 +5,7 @@
     image: quay.io/fgiorgetti/nearestprime-db
     state: absent
     network:
-      - "{{ init.containerNetwork | default('skupper') }}"
+      - "{{ skupper_init_container_network | default('skupper') }}"
 
 - name: Deleting the nearestprime-load-gen container
   containers.podman.podman_container:
@@ -13,9 +13,9 @@
     image: quay.io/fgiorgetti/nearestprime-load-gen
     state: absent
     network:
-      - "{{ init.containerNetwork | default('skupper') }}"
+      - "{{ skupper_init_container_network | default('skupper') }}"
 
 - name: Deleting the nearestprime podman network
   containers.podman.podman_network:
-    name: "{{ init.containerNetwork | default('skupper') }}"
+    name: "{{ skupper_init_container_network | default('skupper') }}"
     state: absent

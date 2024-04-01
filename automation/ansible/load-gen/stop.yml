@@ -5,5 +5,5 @@
   tasks:
     - name: "Stopping load generator"
       ansible.builtin.uri:
-        url: "http://{{ init.ingressHosts[0] }}:8080/set_load/0"
+        url: "http://0.0.0.0:8080/set_load/0"
 
