@@ -16,7 +16,7 @@
 
 - name: Creating the nearestprime podman network
   containers.podman.podman_network:
-    name: "{{ init.containerNetwork | default('skupper') }}"
+    name: "{{ skupper_init_container_network | default('skupper') }}"
 
 - name: Creating the nearestprime-db container
   containers.podman.podman_container:
@@ -24,7 +24,7 @@
     image: quay.io/fgiorgetti/nearestprime-db
     state: started
     network:
-      - "{{ init.containerNetwork | default('skupper') }}"
+      - "{{ skupper_init_container_network | default('skupper') }}"
 
 - name: Creating the nearestprime-load-gen container
   containers.podman.podman_container:
@@ -32,7 +32,7 @@
     image: quay.io/fgiorgetti/nearestprime-load-gen
     state: started
     network:
-      - "{{ init.containerNetwork | default('skupper') }}"
+      - "{{ skupper_init_container_network | default('skupper') }}"
 
 - name: Creating target directory to install the skupper cli
   ansible.builtin.file:

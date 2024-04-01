@@ -7,11 +7,11 @@
 - hosts: onprem
   collections:
     - containers.podman
-    - skupper.network
+    - skupper.skupper
   tasks:
   - ansible.builtin.include_tasks: setup-podman.yml
 - hosts: all
   collections:
-    - skupper.network
+    - skupper.skupper
   tasks:
   - ansible.builtin.include_tasks: setup-skupper.yml

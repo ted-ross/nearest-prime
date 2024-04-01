@@ -1,4 +1,4 @@
 ---
 - include_role:
-    name: skupper_delete
+    name: skupper_teardown
     apply: { ignore_errors: true }

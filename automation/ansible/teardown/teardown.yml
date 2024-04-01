@@ -1,7 +1,7 @@
 ---
 - hosts: all
   collections:
-    - skupper.network
+    - skupper.skupper
   tasks:
   - ansible.builtin.include_tasks: teardown-skupper.yml
 - hosts: cloud
