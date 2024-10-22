@@ -30,8 +30,8 @@ import random
 ##   Higher numbers result in longer work-processing time
 ##   Higher delta between min and max results in greater variance in work-processing time
 ##
-VALUE_MIN = 1000000
-VALUE_MAX = 20000000
+VALUE_MIN = 1000000000
+VALUE_MAX = 2000000000
 
 class Setup(object):
     '''
@@ -62,12 +62,13 @@ class Setup(object):
         '''
         print("Re-creating table...")
         cursor = self.conn.cursor()
-        cursor.execute('''CREATE TABLE WORK
-            (
-                ID INT PRIMARY KEY NOT NULL,
-                VALUE INT NOT NULL,
-                NEARPRIME INT,
-                PROCESSEDBY VARCHAR(80)
+        cursor.execute('''CREATE TABLE WORK (
+                id int PRIMARY KEY NOT NULL,
+                value int NOT NULL,
+                nearprime int,
+                processedby text,
+                fetchtime numeric(4,3),
+                computetime numeric(4,3)
             );
         ''')
         self.conn.commit()
