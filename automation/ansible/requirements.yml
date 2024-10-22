@@ -1,4 +1,0 @@
-collections:
-  - skupper.network
-  - kubernetes.core
-  - containers.podman
