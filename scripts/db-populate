@@ -19,6 +19,10 @@
 # under the License
 #
 
+##
+## This script sets up and populates the database work table with large numbers to be processed.
+##
+
 import sys
 import os
 import psycopg2

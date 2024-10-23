@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License
+#
+
+##
+## This script creates the two DMZ sites and links them together.  It creates an access token for each site
+## that is used by other sites to establish connections to the DMZ.
+##
+## Note that the access tokens are valid for 1 hour or 10 uses, whichever comes first, after which new sites cannot be connected.
+##
+
+if [ ! -v NP_NAMESPACE_PREFIX ]; then
+    NP_NAMESPACE_PREFIX=npdemo
+fi
+
+for i in dmz-a dmz-b; do
+#
+# Create a Site, RouterAccess, and AccessGrant for each DMZ site.
+#
+echo Create site $i in namespace ${NP_NAMESPACE_PREFIX}-$i
+cat >temp <<EOF
+apiVersion: skupper.io/v1alpha1
+kind: Site
+metadata:
+  name: $i
+spec:
+  routerMode: "interior"
+  ha: false
+---
+apiVersion: skupper.io/v1alpha1
+kind: RouterAccess
+metadata:
+  name: $i-peer
+spec:
+  generateTlsCredentials: true
+  issuer: skupper-site-ca
+  roles:
+  - name: inter-router
+    port: 55671
+  tlsCredentials: skupper-site-server
+---
+apiVersion: skupper.io/v1alpha1
+kind: AccessGrant
+metadata:
+  name: $i-grant
+spec:
+  redemptionsAllowed: 10
+  expirationWindow: 1h
+EOF
+kubectl apply -n ${NP_NAMESPACE_PREFIX}-$i -f temp
+
+echo Generating access token token-$i.yaml
+
+#
+# Wait for the access grant to achieve READY state.
+#
+kubectl wait --for=condition=ready accessgrant/$i-grant -n ${NP_NAMESPACE_PREFIX}-$i
+
+#
+# Use the contents from the completed access grant to create an access token.
+#
+kubectl get accessgrant $i-grant -n ${NP_NAMESPACE_PREFIX}-$i -o yaml > temp
+URL=`cat temp | yq '.status.url'`
+CODE=`cat temp | yq '.status.code'`
+CA=`cat temp | yq -r '.status.ca' | awk '{ print "    " $0 }'`
+cat >token-$i.yaml <<EOF
+apiVersion: skupper.io/v1alpha1
+kind: AccessToken
+metadata:
+  name: $i-token
+spec:
+  url: ${URL}
+  code: ${CODE}
+  ca: |
+${CA}
+EOF
+
+rm temp
+echo
+done
+
+#
+# Create an inter-site link from DMZ-B to DMZ-A.
+#
+echo Link dmz-b to dmz-a
+kubectl apply -f token-dmz-a.yaml -n ${NP_NAMESPACE_PREFIX}-dmz-b
